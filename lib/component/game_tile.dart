@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
 
-class GameTile extends StatefulWidget {
+class GameTile extends StatelessWidget {
   final Color? color;
-  final int number;
+  final String number;
+  final List<Widget> playerPieces;
   const GameTile({
     super.key,
     required this.number,
-    this.color
+    this.color,
+    required this.playerPieces
   });
 
   @override
-  State<GameTile> createState() => _GameTileState();
-}
-
-class _GameTileState extends State<GameTile> {
-  @override
   Widget build(BuildContext context) {
+    final List<Widget> widgets = List.from(playerPieces);
+    widgets.insert(0,
+      Text(
+        number,
+        style: const TextStyle(
+            fontSize: 10
+        ),
+        textAlign: TextAlign.center,
+      )
+    );
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(6),
-        color: widget.color ?? Theme.of(context).highlightColor,
+        color: color ?? Theme.of(context).highlightColor,
       ),
       child: Padding(
         padding: const EdgeInsets.all(1.0),
-        child: Text(
-          widget.number.toString(),
-          style: const TextStyle(
-            fontSize: 10
-          ),
+        child: GridView.count(
+          crossAxisCount: 3,
+          children: widgets,
         ),
       ),
     );

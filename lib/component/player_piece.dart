@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
-class PlayerPiece extends StatefulWidget {
+class PlayerPiece extends StatelessWidget {
   final int number;
   final double size;
-  const PlayerPiece({
+  final bool highlighted;
+  final bool withNumber;
+  PlayerPiece({
     super.key,
     required this.number,
-    required this.size
+    required this.size,
+    required this.highlighted,
+    required this.withNumber
   });
 
-  @override
-  State<PlayerPiece> createState() => _PlayerPieceState();
-}
-
-class _PlayerPieceState extends State<PlayerPiece> {
   final List<Color> colors = [
     Colors.blue,
     Colors.red,
@@ -25,38 +24,31 @@ class _PlayerPieceState extends State<PlayerPiece> {
     Colors.yellow.shade200
   ];
 
-  bool highlighted = false;
-
-  void toggleHighlighted(){
-    setState(() {
-      highlighted = !highlighted;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: widget.size,
-      height: widget.size,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: (highlighted) ? colors[widget.number + 4 - 1] : colors[widget.number - 1],
+        color: (highlighted) ? colors[number + 4 - 1] : colors[number - 1],
         border: Border.all(
           color: Colors.black,
-          width: 2.5,
+          width: size/20,
         ),
       ),
-      child: Center(
+      child: (withNumber) ?
+      Center(
         child: Text(
-          widget.number.toString(),
+          number.toString(),
           style: TextStyle(
-            fontSize: widget.size / 3,
+            fontSize: size / 3,
             color: Colors.black,
             fontWeight: FontWeight.bold
           ),
           textAlign: TextAlign.center,
         ),
-      ),
+      ) : null,
     )
     ;
   }

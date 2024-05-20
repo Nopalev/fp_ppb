@@ -1,15 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:fp_ppb/component/game_tile.dart';
+import 'package:fp_ppb/component/player_piece.dart';
 
-class GameBoard extends StatefulWidget {
-  const GameBoard({super.key});
+class GameBoard extends StatelessWidget {
+  final List<int> positions;
+  GameBoard({
+    super.key,
+    required this.positions
+  });
 
-  @override
-  State<GameBoard> createState() => _GameBoardState();
-}
+  final List<Widget> gridTiles = [];
 
-class _GameBoardState extends State<GameBoard> {
-  List<Widget> gridTiles = [];
+  final List<Widget> playerPieces = [
+    PlayerPiece(
+      number: 1,
+      size: 10.0,
+      highlighted: false,
+      withNumber: false,
+    ),
+    PlayerPiece(
+      number: 2,
+      size: 10.0,
+      highlighted: false,
+      withNumber: false,
+    ),
+    PlayerPiece(
+      number: 3,
+      size: 10.0,
+      highlighted: false,
+      withNumber: false,
+    ),
+    PlayerPiece(
+      number: 4,
+      size: 10.0,
+      highlighted: false,
+      withNumber: false,
+    )
+  ];
+
+  int positionToIndex(int position){
+    int res = 80 - position;
+    if((res ~/ 8) % 2 == 1){
+      int temp = (((res  ~/ 8)) * 8) - 1;
+      if(position % 8 != 0){
+        return temp + (position % 8);
+      }
+      else{
+        return temp + (position % 8) + 8;
+      }
+    }
+    else {
+      return res;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +67,26 @@ class _GameBoardState extends State<GameBoard> {
       }
       gridTiles.add(
         GameTile(
-          number: number,
+          number: number.toString(),
+          playerPieces: const [],
         )
+      );
+    }
+
+    Map<int, List<Widget>> playerPerPosition = {};
+
+    for(int i=0; i<positions.length; i++){
+      playerPerPosition[positions[i]] = [];
+    }
+
+    for(int i=0; i<positions.length; i++){
+      playerPerPosition[positions[i]]!.add(playerPieces[i]);
+    }
+
+    for(var temp in playerPerPosition.keys){
+      gridTiles[positionToIndex(temp)] = GameTile(
+        number: temp.toString(),
+        playerPieces: playerPerPosition[temp]!,
       );
     }
 
