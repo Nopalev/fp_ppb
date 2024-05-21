@@ -14,18 +14,65 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  List<Widget> playerPieces = [
+    PlayerPiece(
+      number: 1,
+      size: 50.0,
+      highlighted: true,
+      withNumber: true,
+    ),
+    PlayerPiece(
+      number: 2,
+      size: 50.0,
+      highlighted: false,
+      withNumber: true,
+    ),
+    PlayerPiece(
+      number: 3,
+      size: 50.0,
+      highlighted: false,
+      withNumber: true,
+    ),
+    PlayerPiece(
+      number: 4,
+      size: 50.0,
+      highlighted: false,
+      withNumber: true,
+    )
+  ];
+
+  Map<int, int> vortices = {
+    10: 54,
+    14: 39,
+    30: 67,
+    51: 76,
+  };
+
+  Map<int, int> snake = {};
+  Map<int, int> ladder = {};
+
   List<int> players = [
     1,
     2,
     3,
     4
   ];
+
   List<int> positions = [
-    1,
-    2,
-    3,
-    4
+    0,
+    0,
+    0,
+    0
   ];
+
+  int turn = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    snake = vortices.map((key, value) => MapEntry(value, key));
+    ladder = vortices;
+  }
 
   void rollDice() async {
     int dice = Random().nextInt(6);
@@ -38,6 +85,42 @@ class _GamePageState extends State<GamePage> {
         );
       }
     );
+
+    for(int i=0; i<=dice; i++){
+      setState(() {
+        positions[turn] += 1;
+      });
+      await Future.delayed(const Duration(milliseconds: 750));
+    }
+
+    if(snake.containsKey(positions[turn])){
+      setState(() {
+        positions[turn] = snake[positions[turn]]!;
+      });
+      await Future.delayed(const Duration(milliseconds: 750));
+    }
+    else if(ladder.containsKey(positions[turn])){
+      setState(() {
+        positions[turn] = ladder[positions[turn]]!;
+      });
+      await Future.delayed(const Duration(milliseconds: 750));
+    }
+
+    setState(() {
+      playerPieces[turn] = PlayerPiece(
+        number: turn + 1,
+        size: 50.0,
+        highlighted: false,
+        withNumber: true,
+      );
+      turn = (turn + 1) % 4;
+      playerPieces[turn] = PlayerPiece(
+        number: turn + 1,
+        size: 50.0,
+        highlighted: true,
+        withNumber: true,
+      );
+    });
   }
 
   @override
@@ -62,37 +145,13 @@ class _GamePageState extends State<GamePage> {
               Expanded(
                 child: GameBoard(
                   positions: positions,
+                  vortices: vortices,
                 )
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 verticalDirection: VerticalDirection.up,
-                children: [
-                  PlayerPiece(
-                    number: 1,
-                    size: 50.0,
-                    highlighted: false,
-                    withNumber: true,
-                  ),
-                  PlayerPiece(
-                    number: 2,
-                    size: 50.0,
-                    highlighted: false,
-                      withNumber: true,
-                  ),
-                  PlayerPiece(
-                    number: 3,
-                    size: 50.0,
-                    highlighted: false,
-                    withNumber: true,
-                  ),
-                  PlayerPiece(
-                    number: 4,
-                    size: 50.0,
-                    highlighted: false,
-                    withNumber: true,
-                  ),
-                ],
+                children: playerPieces
               ),
               const SizedBox(height: 100),
             ],
@@ -104,21 +163,22 @@ class _GamePageState extends State<GamePage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           CustomFAB(
+            heroTag: 'howToPlay',
+            onPressed: (){
+              setState(() {
+                positions[3] += 1;
+              });
+            },
+            icon: const Icon(
+              Icons.question_mark
+            )
+          ),
+          CustomFAB(
             heroTag: 'dice',
             onPressed: rollDice,
             icon: const Icon(
               DiceIcons.dice3
             )
-          ),CustomFAB(
-              heroTag: 'add',
-              onPressed: (){
-                setState(() {
-                  positions[3] += 1;
-                });
-              },
-              icon: const Icon(
-                  Icons.add
-              )
           )
         ],
       ),
