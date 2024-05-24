@@ -105,13 +105,13 @@ class GameBoard extends StatelessWidget {
     Map<int, List<Widget>> playerPerPosition = {};
 
     for(int i=0; i<positions.length; i++){
-      if(positions[i] != 0) {
+      if(positions[i] > 0) {
         playerPerPosition[positions[i]] = [];
       }
     }
 
     for(int i=0; i<positions.length; i++){
-      if(positions[i] != 0) {
+      if(positions[i] > 0) {
         playerPerPosition[positions[i]]!.add(playerPieces[i]);
       }
     }

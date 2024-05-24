@@ -49,7 +49,6 @@ class PlayerPiece extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ) : null,
-    )
-    ;
+    );
   }
 }

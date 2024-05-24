@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomFAB extends StatelessWidget {
   final String heroTag;
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final Icon icon;
   const CustomFAB({
     super.key,
