@@ -177,7 +177,7 @@ class _GamePageState extends State<GamePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 10),
+              const SizedBox(height: 25),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -216,7 +216,7 @@ class _GamePageState extends State<GamePage> {
                   )
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 25),
               Expanded(
                 child: GameBoard(
                   positions: positions,
@@ -237,19 +237,6 @@ class _GamePageState extends State<GamePage> {
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          CustomFAB(
-            heroTag: 'howToPlay',
-            onPressed: (){
-              setState(() {
-                positions[1] += 1;
-                positions[2] += 1;
-                positions[3] += 1;
-              });
-            },
-            icon: const Icon(
-              Icons.question_mark
-            )
-          ),
           CustomFAB(
             heroTag: 'dice',
             onPressed: disableDice ? null : rollDice,

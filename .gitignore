@@ -45,3 +45,4 @@ app.*.map.json
 # Contains secret application's API Key
 /lib/firebase_options.dart
 /android/app/google-services.json
+/firebase.json

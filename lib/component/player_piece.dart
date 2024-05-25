@@ -14,10 +14,10 @@ class PlayerPiece extends StatelessWidget {
   });
 
   final List<Color> colors = [
-    Colors.blue.shade200,
-    Colors.red.shade200,
-    Colors.green.shade200,
-    Colors.yellow.shade200,
+    Colors.lightBlue.shade200,
+    Colors.pink.shade200,
+    Colors.teal.shade200,
+    Colors.lime.shade200,
     Colors.blue,
     Colors.red,
     Colors.green,
