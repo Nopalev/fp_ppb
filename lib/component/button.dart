@@ -16,8 +16,8 @@ class Button extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 50,
-        width: 100,
+        height: 60,
+        width: 120,
         decoration: BoxDecoration(
           color: Theme.of(context).highlightColor,
           borderRadius: BorderRadius.circular(25)
