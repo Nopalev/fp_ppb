@@ -96,7 +96,10 @@ class _GamePageState extends State<GamePage> {
     await showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context){
+      builder: (builderContext){
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.of(builderContext).pop();
+        });
         return RollDIceDialog(
           selectedDice: dice
         );
@@ -104,11 +107,12 @@ class _GamePageState extends State<GamePage> {
     );
 
     for(int i=0; i<=dice; i++){
+      await Future.delayed(const Duration(milliseconds: 750));
       setState(() {
         positions[turn] += 1;
       });
-      await Future.delayed(const Duration(milliseconds: 750));
       if(positions[turn] == 80){
+        await Future.delayed(const Duration(milliseconds: 750));
         setState(() {
           positions[turn] = -1;
           rank.add(players[turn]);
@@ -118,18 +122,17 @@ class _GamePageState extends State<GamePage> {
         break;
       }
     }
+    await Future.delayed(const Duration(milliseconds: 750));
 
     if(snake.containsKey(positions[turn])){
       setState(() {
         positions[turn] = snake[positions[turn]]!;
       });
-      await Future.delayed(const Duration(milliseconds: 750));
     }
     else if(ladder.containsKey(positions[turn])){
       setState(() {
         positions[turn] = ladder[positions[turn]]!;
       });
-      await Future.delayed(const Duration(milliseconds: 750));
     }
 
     if(rank.length == 3){
