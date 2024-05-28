@@ -28,9 +28,16 @@ class _GamePageState extends State<GamePage> {
       'Bot 2',
       'Bot 3',
       'Bot 4'
+    ],
+    usernames: [
+      FirebaseAuth.instance.currentUser!.displayName.toString(),
+      'Bot 2',
+      'Bot 3',
+      'Bot 4'
     ]
   );
   bool disableDice = false;
+  bool gameFinished = false;
   List<Widget> playerPieces = [
     PlayerPiece(
       number: 1,
@@ -77,14 +84,14 @@ class _GamePageState extends State<GamePage> {
 
   int turn = 0;
 
-  void createToDB() async {
+  void initGame() async {
     gameReference = await gameDatabase.create(game);
   }
 
   @override
   void initState() {
     super.initState();
-    createToDB();
+    initGame();
     snake = vortices.map((key, value) => MapEntry(value, key));
     ladder = vortices;
   }
@@ -148,6 +155,7 @@ class _GamePageState extends State<GamePage> {
 
     if(game.rank.length == 3){
       setState(() {
+        gameFinished = true;
         turn = nextTurn(turn);
         game.changeRank(turn);
         gameDatabase.update(gameReference!.id, game);
@@ -155,12 +163,12 @@ class _GamePageState extends State<GamePage> {
       await Future.delayed(const Duration(milliseconds: 750));
       if(mounted){
         showDialog(
-            context: context,
-            builder: (context){
-              return FinishedGameDialog(
-                rank: game.rank
-              );
-            }
+          context: context,
+          builder: (context){
+            return FinishedGameDialog(
+              rank: game.rank
+            );
+          }
         );
       }
     }
@@ -183,7 +191,8 @@ class _GamePageState extends State<GamePage> {
         disableDice = false;
       }
     });
-    if(game.players[turn].contains('Bot $turn')){
+    if(game.players[turn].contains('Bot ${turn+1}') && !gameFinished){
+      await Future.delayed(const Duration(milliseconds: 750));
       rollDice();
     }
   }

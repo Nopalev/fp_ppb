@@ -5,7 +5,6 @@ import 'package:fp_ppb/component/button.dart';
 import 'package:fp_ppb/component/square_tile.dart';
 import 'package:fp_ppb/component/text_field.dart';
 import 'package:fp_ppb/database/player.dart';
-import 'package:fp_ppb/model/player.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

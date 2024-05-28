@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Snake & Ladder',
-        actions: (authState()) ? [
+        actions: (!authState()) ? [
           IconButton(
             onPressed: () async {
               await Navigator.pushNamed(context, '/profile');

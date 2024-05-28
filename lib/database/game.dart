@@ -8,6 +8,7 @@ class GameDatabase{
     final data = {
       'players': game.players,
       'rank': game.rank,
+      'usernames': game.usernames,
       'timestamp': Timestamp.now()
     };
     return games.add(data);
