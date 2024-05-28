@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fp_ppb/component/app_bar.dart';
 import 'package:fp_ppb/component/button.dart';
 import 'package:fp_ppb/component/square_tile.dart';
 import 'package:fp_ppb/component/text_field.dart';
+import 'package:fp_ppb/database/player.dart';
+import 'package:fp_ppb/model/player.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -12,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final PlayerDatabase playerDatabase = PlayerDatabase();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmationController = TextEditingController();
@@ -50,6 +54,9 @@ class _RegisterPageState extends State<RegisterPage> {
       }
       showErrorMessage(error.toString());
     }
+
+    FirebaseAuth.instance.currentUser!.updateDisplayName('username');
+
     if(mounted){
       Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
     }
@@ -77,6 +84,9 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomAppBar(
+        title: 'Register',
+      ),
       resizeToAvoidBottomInset: false,
       body: Center(
         child: Padding(

@@ -1,5 +1,7 @@
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dice_icons/dice_icons.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fp_ppb/component/finished_game_dialog.dart';
 import 'package:fp_ppb/component/floating_action_button.dart';
@@ -7,6 +9,8 @@ import 'package:fp_ppb/component/game_board.dart';
 import 'package:fp_ppb/component/medal.dart';
 import 'package:fp_ppb/component/player_piece.dart';
 import 'package:fp_ppb/component/roll_dice_dialog.dart';
+import 'package:fp_ppb/database/game.dart';
+import 'package:fp_ppb/model/game.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -16,6 +20,16 @@ class GamePage extends StatefulWidget {
 }
 
 class _GamePageState extends State<GamePage> {
+  GameDatabase gameDatabase = GameDatabase();
+  DocumentReference? gameReference;
+  Game game = Game(
+    players: [
+      FirebaseAuth.instance.currentUser!.uid,
+      'Bot 2',
+      'Bot 3',
+      'Bot 4'
+    ]
+  );
   bool disableDice = false;
   List<Widget> playerPieces = [
     PlayerPiece(
@@ -54,13 +68,6 @@ class _GamePageState extends State<GamePage> {
   Map<int, int> snake = {};
   Map<int, int> ladder = {};
 
-  List<String> players = [
-    'Player 1',
-    'Player 2',
-    'Player 3',
-    'Player 4'
-  ];
-
   List<int> positions = [
     0,
     0,
@@ -68,13 +75,16 @@ class _GamePageState extends State<GamePage> {
     0
   ];
 
-  List<String> rank = [];
-
   int turn = 0;
+
+  void createToDB() async {
+    gameReference = await gameDatabase.create(game);
+  }
 
   @override
   void initState() {
     super.initState();
+    createToDB();
     snake = vortices.map((key, value) => MapEntry(value, key));
     ladder = vortices;
   }
@@ -115,7 +125,8 @@ class _GamePageState extends State<GamePage> {
         await Future.delayed(const Duration(milliseconds: 750));
         setState(() {
           positions[turn] = -1;
-          rank.add(players[turn]);
+          game.changeRank(turn);
+          gameDatabase.update(gameReference!.id, game);
         });
       }
       if(positions[turn] == -1){
@@ -135,10 +146,11 @@ class _GamePageState extends State<GamePage> {
       });
     }
 
-    if(rank.length == 3){
+    if(game.rank.length == 3){
       setState(() {
         turn = nextTurn(turn);
-        rank.add(players[turn]);
+        game.changeRank(turn);
+        gameDatabase.update(gameReference!.id, game);
       });
       await Future.delayed(const Duration(milliseconds: 750));
       if(mounted){
@@ -146,7 +158,7 @@ class _GamePageState extends State<GamePage> {
             context: context,
             builder: (context){
               return FinishedGameDialog(
-                rank: rank
+                rank: game.rank
               );
             }
         );
@@ -167,8 +179,13 @@ class _GamePageState extends State<GamePage> {
         highlighted: true,
         withNumber: true,
       );
-      disableDice = false;
+      if(game.players[turn] == FirebaseAuth.instance.currentUser!.uid){
+        disableDice = false;
+      }
     });
+    if(game.players[turn].contains('Bot $turn')){
+      rollDice();
+    }
   }
 
   @override
@@ -188,14 +205,14 @@ class _GamePageState extends State<GamePage> {
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (rank.isEmpty) ? '1st: ----' : '1st: ${rank[0]}'
+                      (game.rank.isEmpty) ? '1st: ----' : '1st: ${game.rank[0]}'
                     ),
                   ),
                   Medal(rank: 2),
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (rank.length < 2) ? '2nd: ----' : '2nd: ${rank[1]}'
+                      (game.rank.length < 2) ? '2nd: ----' : '2nd: ${game.rank[1]}'
                     ),
                   )
                 ],
@@ -207,14 +224,14 @@ class _GamePageState extends State<GamePage> {
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (rank.length < 3) ? '3rd: ----' : '3rd: ${rank[2]}'
+                      (game.rank.length < 3) ? '3rd: ----' : '3rd: ${game.rank[2]}'
                     ),
                   ),
                   Medal(rank: 4),
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (rank.length < 4) ? '4th: ----' : '4th: ${rank[3]}'
+                      (game.rank.length < 4) ? '4th: ----' : '4th: ${game.rank[3]}'
                     ),
                   )
                 ],

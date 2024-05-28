@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'dart:math';
 
 class SetColor {
@@ -21,18 +19,18 @@ class ReplyMsgCard extends StatefulWidget {
   // final String timestamp;
 
   const ReplyMsgCard({
-    Key? key,
+    super.key,
     required this.username,
     required this.message,
     // required this.timestamp
-  }) : super(key: key);
+  });
 
   @override
   State<ReplyMsgCard> createState() => _ReplyMsgCardState();
 }
 
 class _ReplyMsgCardState extends State<ReplyMsgCard> {
-  Color ColorChatUser = SetColor.randomColor();
+  Color colorChatUser = SetColor.randomColor();
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +42,19 @@ class _ReplyMsgCardState extends State<ReplyMsgCard> {
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: Color(0xFF35374B),
-          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          color: const Color(0xFF35374B),
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
               Padding(
-                  padding: EdgeInsets.only(left: 10, top: 5),
+                  padding: const EdgeInsets.only(left: 10, top: 5),
                   child: Text(widget.username,
-                      style: TextStyle(fontSize: 14, color: ColorChatUser, fontWeight: FontWeight.bold))),
+                      style: TextStyle(fontSize: 14, color: colorChatUser, fontWeight: FontWeight.bold))),
               Padding(
-                  padding: EdgeInsets.fromLTRB(10, 25, 40, 20),
+                  padding: const EdgeInsets.fromLTRB(10, 25, 40, 20),
                   child: Text(
                     widget.message,
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   )),
               Positioned(
                   bottom: 4,

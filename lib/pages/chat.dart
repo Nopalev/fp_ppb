@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fp_ppb/component/app_bar.dart';
 import 'package:fp_ppb/component/own_msg_card.dart';
 import 'package:fp_ppb/component/reply_msg_card.dart';
@@ -23,7 +22,7 @@ class _ChatState extends State<Chat> {
             children: [
               ListView(
                 shrinkWrap: true,
-                children: [
+                children: const [
                   OwnMsgCard(message: "Halo Broo"),
                   ReplyMsgCard(username: "ino",message: "Halooo"),
                   ReplyMsgCard(username: "gus",message: "Ya halo"),
@@ -36,7 +35,7 @@ class _ChatState extends State<Chat> {
                     Container(
                       width: MediaQuery.of(context).size.width - 55,
                       child: Card(
-                        margin: EdgeInsets.only(left: 2, right: 2, bottom: 8),
+                        margin: const EdgeInsets.only(left: 2, right: 2, bottom: 8),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(25)),
                         child: TextFormField(
@@ -48,10 +47,10 @@ class _ChatState extends State<Chat> {
                               border: InputBorder.none,
                               hintText: "Type a message...",
                               prefixIcon: IconButton(
-                                icon: Icon(Icons.emoji_emotions),
+                                icon: const Icon(Icons.emoji_emotions),
                                 onPressed: () {},
                               ),
-                              contentPadding: EdgeInsets.all(5)),
+                              contentPadding: const EdgeInsets.all(5)),
                         ),
                       ),
                     ),

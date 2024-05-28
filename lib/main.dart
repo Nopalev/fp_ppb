@@ -5,6 +5,7 @@ import 'package:fp_ppb/pages/chat.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fp_ppb/pages/how_to_play.dart';
 import 'package:fp_ppb/pages/login.dart';
+import 'package:fp_ppb/pages/profile.dart';
 import 'package:fp_ppb/pages/register.dart';
 import 'firebase_options.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
   MyApp({super.key});
   final Map<String, Widget Function(BuildContext)> routes = {
     '/home' : (context) => const HomePage(),
+    '/profile' : (context) => const ProfilePage(),
     '/game' : (context) => const GamePage(),
     '/chat' : (context) => const Chat(),
     '/login' : (context) => const LoginPage(),
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       theme: ThemeData.dark(),
       routes: routes,
-      initialRoute: '/chat',
+      initialRoute: '/home',
     );
   }
 }

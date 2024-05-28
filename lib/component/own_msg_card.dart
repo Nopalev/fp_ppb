@@ -1,16 +1,14 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class OwnMsgCard extends StatefulWidget {
   final String message;
   // final String timestamp;
 
   const OwnMsgCard({
-    Key? key,
+    super.key,
     required this.message,
     // required this.timestamp
-  }) : super(key: key);
+  });
 
   @override
   State<OwnMsgCard> createState() => _OwnMsgCardState();
@@ -27,16 +25,16 @@ class _OwnMsgCardState extends State<OwnMsgCard> {
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: Color(0xFF3C0753),
-          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          color: const Color(0xFF3C0753),
+          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
               Padding(
                   // MESSAGE
-                  padding: EdgeInsets.fromLTRB(10, 5, 40, 20),
+                  padding: const EdgeInsets.fromLTRB(10, 5, 40, 20),
                   child: Text(
                     widget.message,
-                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
                   )),
               Positioned(
                   bottom: 4,
