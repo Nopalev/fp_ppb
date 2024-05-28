@@ -14,14 +14,14 @@ class PlayerPiece extends StatelessWidget {
   });
 
   final List<Color> colors = [
+    Colors.lightBlue.shade200,
+    Colors.pink.shade200,
+    Colors.teal.shade200,
+    Colors.lime.shade200,
     Colors.blue,
     Colors.red,
     Colors.green,
-    Colors.yellow,
-    Colors.blue.shade200,
-    Colors.red.shade200,
-    Colors.green.shade200,
-    Colors.yellow.shade200
+    Colors.yellow
   ];
 
   @override
@@ -49,7 +49,6 @@ class PlayerPiece extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
       ) : null,
-    )
-    ;
+    );
   }
 }

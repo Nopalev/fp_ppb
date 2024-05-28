@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomFAB extends StatelessWidget {
   final String heroTag;
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final Icon icon;
   const CustomFAB({
     super.key,
@@ -14,7 +14,7 @@ class CustomFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: (onPressed == null) ? Colors.grey : Colors.blueAccent,
       foregroundColor: Colors.black87,
       heroTag: heroTag,
       onPressed: onPressed,

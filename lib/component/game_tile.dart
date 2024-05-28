@@ -17,8 +17,10 @@ class GameTile extends StatelessWidget {
     widgets.insert(0,
       Text(
         number,
-        style: const TextStyle(
-            fontSize: 10
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: (color != null) ? Colors.black87 : Colors.white70
         ),
         textAlign: TextAlign.center,
       )
