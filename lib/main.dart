@@ -3,6 +3,8 @@ import 'package:fp_ppb/pages/game.dart';
 import 'package:fp_ppb/pages/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fp_ppb/pages/how_to_play.dart';
+import 'package:fp_ppb/pages/login.dart';
+import 'package:fp_ppb/pages/register.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -18,6 +20,8 @@ class MyApp extends StatelessWidget {
   final Map<String, Widget Function(BuildContext)> routes = {
     '/home' : (context) => const HomePage(),
     '/game' : (context) => const GamePage(),
+    '/login' : (context) => const LoginPage(),
+    '/register' : (context) => const RegisterPage(),
     '/how_to_play' : (context) => const HowToPlayPage()
   };
 
