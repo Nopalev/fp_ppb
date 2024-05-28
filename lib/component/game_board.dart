@@ -4,36 +4,47 @@ import 'package:fp_ppb/component/player_piece.dart';
 
 class GameBoard extends StatelessWidget {
   final List<int> positions;
+  final Map<int, int> vortices;
   GameBoard({
     super.key,
-    required this.positions
+    required this.positions,
+    required this.vortices
   });
 
   final List<Widget> gridTiles = [];
+
+  final List<Color> colors = [
+    Colors.blue,
+    Colors.red,
+    Colors.green,
+    Colors.yellow
+  ];
+
+  final Map<int, Color> vorticesColor = {};
 
   final List<Widget> playerPieces = [
     PlayerPiece(
       number: 1,
       size: 10.0,
-      highlighted: false,
+      highlighted: true,
       withNumber: false,
     ),
     PlayerPiece(
       number: 2,
       size: 10.0,
-      highlighted: false,
+      highlighted: true,
       withNumber: false,
     ),
     PlayerPiece(
       number: 3,
       size: 10.0,
-      highlighted: false,
+      highlighted: true,
       withNumber: false,
     ),
     PlayerPiece(
       number: 4,
       size: 10.0,
-      highlighted: false,
+      highlighted: true,
       withNumber: false,
     )
   ];
@@ -56,6 +67,13 @@ class GameBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int index = 0;
+    for(var element in vortices.entries){
+      vorticesColor[element.key] = colors[index];
+      vorticesColor[element.value] = colors[index];
+      index++;
+    }
+
     for(int i = 1; i <= 80; i++){
       int number = 0;
       if(((i - 1) ~/ 8) % 2 == 1){
@@ -65,29 +83,53 @@ class GameBoard extends StatelessWidget {
       else{
         number = 81-i;
       }
-      gridTiles.add(
-        GameTile(
-          number: number.toString(),
-          playerPieces: const [],
-        )
-      );
+      if(vorticesColor.containsKey(number)){
+        gridTiles.add(
+          GameTile(
+            number: number.toString(),
+            playerPieces: const [],
+            color: vorticesColor[number],
+          )
+        );
+      }
+      else {
+        gridTiles.add(
+          GameTile(
+            number: number.toString(),
+            playerPieces: const [],
+          )
+        );
+      }
     }
 
     Map<int, List<Widget>> playerPerPosition = {};
 
     for(int i=0; i<positions.length; i++){
-      playerPerPosition[positions[i]] = [];
+      if(positions[i] > 0) {
+        playerPerPosition[positions[i]] = [];
+      }
     }
 
     for(int i=0; i<positions.length; i++){
-      playerPerPosition[positions[i]]!.add(playerPieces[i]);
+      if(positions[i] > 0) {
+        playerPerPosition[positions[i]]!.add(playerPieces[i]);
+      }
     }
 
     for(var temp in playerPerPosition.keys){
-      gridTiles[positionToIndex(temp)] = GameTile(
-        number: temp.toString(),
-        playerPieces: playerPerPosition[temp]!,
-      );
+      if(vorticesColor.containsKey(temp)) {
+        gridTiles[positionToIndex(temp)] = GameTile(
+          number: temp.toString(),
+          playerPieces: playerPerPosition[temp]!,
+          color: vorticesColor[temp],
+        );
+      }
+      else{
+        gridTiles[positionToIndex(temp)] = GameTile(
+          number: temp.toString(),
+          playerPieces: playerPerPosition[temp]!,
+        );
+      }
     }
 
     return GridView.count(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Button extends StatelessWidget {
-  final void Function() onTap;
+  final void Function()? onTap;
   final String childText;
   final Color? color;
   const Button({
@@ -17,9 +17,9 @@ class Button extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: 50,
-        width: 100,
+        width: 150,
         decoration: BoxDecoration(
-          color: Theme.of(context).highlightColor,
+          color: (onTap == null) ? Theme.of(context).disabledColor : Theme.of(context).highlightColor,
           borderRadius: BorderRadius.circular(25)
         ),
         child: Center(
@@ -28,7 +28,7 @@ class Button extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: color ?? Colors.blueAccent
+              color: color ?? ((onTap == null) ? Colors.blue.shade900 : Colors.blueAccent)
             ),
           ),
         ),

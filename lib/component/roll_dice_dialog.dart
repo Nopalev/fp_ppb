@@ -1,6 +1,5 @@
 import 'package:dice_icons/dice_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:fp_ppb/component/floating_action_button.dart';
 
 class RollDIceDialog extends StatefulWidget {
   final int selectedDice;
@@ -33,17 +32,7 @@ class _RollDIceDialogState extends State<RollDIceDialog> {
         dices[widget.selectedDice],
         size: 150.0,
         color: Colors.blueAccent,
-      ),
-      actions: <Widget>[
-        CustomFAB(
-          heroTag: 'closeDialog',
-          icon: const Icon(
-              Icons.close
-          ),
-          onPressed: () { Navigator.of(context).pop(); },
-        ),
-      ],
-      actionsAlignment: MainAxisAlignment.center,
+      )
     );
   }
 }
