@@ -24,20 +24,38 @@ class _GamePageState extends State<GamePage> {
   DocumentReference? gameReference;
   Game game = Game(
     players: [
-      FirebaseAuth.instance.currentUser!.uid,
-      'Bot 2',
-      'Bot 3',
-      'Bot 4'
+      {
+        'id': FirebaseAuth.instance.currentUser!.uid,
+        'username': FirebaseAuth.instance.currentUser!.displayName.toString(),
+        'rank' : 0,
+        'bot' : false
+      },
+      {
+        'id': 'Bot 2',
+        'username': 'Bot 2',
+        'rank' : 0,
+        'bot': true
+      },
+      {
+        'id': 'Bot 3',
+        'username': 'Bot 3',
+        'rank' : 0,
+        'bot': true
+      },
+      {
+        'id': 'Bot 4',
+        'username': 'Bot 4',
+        'rank' : 0,
+        'bot': true
+      },
     ],
-    usernames: [
-      FirebaseAuth.instance.currentUser!.displayName.toString(),
-      'Bot 2',
-      'Bot 3',
-      'Bot 4'
-    ]
   );
+
+  int turn = 0;
+  int rank = 1;
   bool disableDice = false;
   bool gameFinished = false;
+
   List<Widget> playerPieces = [
     PlayerPiece(
       number: 1,
@@ -81,8 +99,6 @@ class _GamePageState extends State<GamePage> {
     0,
     0
   ];
-
-  int turn = 0;
 
   void initGame() async {
     gameReference = await gameDatabase.create(game);
@@ -132,7 +148,8 @@ class _GamePageState extends State<GamePage> {
         await Future.delayed(const Duration(milliseconds: 750));
         setState(() {
           positions[turn] = -1;
-          game.changeRank(turn);
+          game.changeRank(turn, rank);
+          rank++;
           gameDatabase.update(gameReference!.id, game);
         });
       }
@@ -153,11 +170,12 @@ class _GamePageState extends State<GamePage> {
       });
     }
 
-    if(game.rank.length == 3){
+    if(rank == 4){
       setState(() {
         gameFinished = true;
         turn = nextTurn(turn);
-        game.changeRank(turn);
+        positions[turn] = -1;
+        game.changeRank(turn, rank);
         gameDatabase.update(gameReference!.id, game);
       });
       await Future.delayed(const Duration(milliseconds: 750));
@@ -166,14 +184,15 @@ class _GamePageState extends State<GamePage> {
           context: context,
           builder: (context){
             return FinishedGameDialog(
-              rank: game.rank
+              rank: game.ranks
             );
           }
         );
       }
     }
 
-    setState(() {
+    setState(() async {
+      await Future.delayed(const Duration(milliseconds: 750));
       playerPieces[turn] = PlayerPiece(
         number: turn + 1,
         size: 50.0,
@@ -187,11 +206,11 @@ class _GamePageState extends State<GamePage> {
         highlighted: true,
         withNumber: true,
       );
-      if(game.players[turn] == FirebaseAuth.instance.currentUser!.uid){
+      if(game.players[turn]['id'] == FirebaseAuth.instance.currentUser!.uid){
         disableDice = false;
       }
     });
-    if(game.players[turn].contains('Bot ${turn+1}') && !gameFinished){
+    if(game.players[turn]['bot'] && !gameFinished){
       await Future.delayed(const Duration(milliseconds: 750));
       rollDice();
     }
@@ -214,14 +233,14 @@ class _GamePageState extends State<GamePage> {
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (game.rank.isEmpty) ? '1st: ----' : '1st: ${game.rank[0]}'
+                      (game.ranks.isEmpty) ? '1st: ----' : '1st: ${game.ranks[0]}'
                     ),
                   ),
                   Medal(rank: 2),
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (game.rank.length < 2) ? '2nd: ----' : '2nd: ${game.rank[1]}'
+                      (game.ranks.length < 2) ? '2nd: ----' : '2nd: ${game.ranks[1]}'
                     ),
                   )
                 ],
@@ -233,14 +252,14 @@ class _GamePageState extends State<GamePage> {
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (game.rank.length < 3) ? '3rd: ----' : '3rd: ${game.rank[2]}'
+                      (game.ranks.length < 3) ? '3rd: ----' : '3rd: ${game.ranks[2]}'
                     ),
                   ),
                   Medal(rank: 4),
                   Container(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      (game.rank.length < 4) ? '4th: ----' : '4th: ${game.rank[3]}'
+                      (game.ranks.length < 4) ? '4th: ----' : '4th: ${game.ranks[3]}'
                     ),
                   )
                 ],

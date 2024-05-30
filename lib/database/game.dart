@@ -7,8 +7,6 @@ class GameDatabase{
   Future<DocumentReference> create(Game game){
     final data = {
       'players': game.players,
-      'rank': game.rank,
-      'usernames': game.usernames,
       'timestamp': Timestamp.now()
     };
     return games.add(data);
@@ -21,7 +19,6 @@ class GameDatabase{
   Future<void> update(String id, Game game){
     final data = {
       'players': game.players,
-      'rank': game.rank,
       'timestamp': Timestamp.now()
     };
     return games.doc(id).update(data);
