@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fp_ppb/component/app_bar.dart';
 import 'package:fp_ppb/component/own_msg_card.dart';
 import 'package:fp_ppb/component/reply_msg_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fp_ppb/service/chat_service.dart';
 
 class Chat extends StatefulWidget {
   const Chat({super.key});
@@ -12,6 +14,11 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  //Firestore
+  final ChatService chatService = ChatService();
+  //Text Controller
+  final TextEditingController msgController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,20 +56,28 @@ class _ChatState extends State<Chat> {
                               hintText: "Type a message...",
                               prefixIcon: IconButton(
                                 icon: Icon(Icons.emoji_emotions),
-                                onPressed: () {},
+                                onPressed: () {
+                                },
                               ),
                               contentPadding: EdgeInsets.all(5)),
+                          controller: msgController,
                         ),
                       ),
                     ),
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(bottom: 8.0),
-                      child: CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Color(0XFFC738BD),
-                        child: Icon(
-                          Icons.send_sharp,
-                          color: Colors.white,
+                      child: GestureDetector(
+                        onTap: (){
+                          chatService.addMsg(msgController.text);
+                          msgController.clear();
+                        },
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: Color(0XFFC738BD),
+                          child: Icon(
+                            Icons.send_sharp,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),

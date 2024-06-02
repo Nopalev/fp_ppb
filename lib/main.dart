@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       theme: ThemeData.dark(),
       routes: routes,
-      initialRoute: '/chat',
+      initialRoute: '/login',
     );
   }
 }
