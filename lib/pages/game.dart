@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:badges/badges.dart' as badges;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dice_icons/dice_icons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -312,6 +313,18 @@ class _GamePageState extends State<GamePage> {
             icon: const Icon(
               DiceIcons.dice3
             )
+          ),
+          badges.Badge(
+            badgeContent: const Text('3'),
+            child: CustomFAB(
+                heroTag: 'dice',
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/chat');
+                },
+                icon: const Icon(
+                    Icons.chat
+                )
+            ),
           )
         ],
       ),
