@@ -26,6 +26,12 @@ class _GamePageState extends State<GamePage> {
   GameDatabase gameDatabase = GameDatabase();
   Timer? timer;
   DocumentReference? gameReference;
+
+  int turn = 0;
+  int rank = 1;
+  bool disableDice = false;
+  bool gameFinished = false;
+
   Game game = Game(
     players: [
       {
@@ -54,11 +60,6 @@ class _GamePageState extends State<GamePage> {
       },
     ],
   );
-
-  int turn = 0;
-  int rank = 1;
-  bool disableDice = false;
-  bool gameFinished = false;
 
   List<Widget> playerPieces = [
     PlayerPiece(
@@ -317,13 +318,13 @@ class _GamePageState extends State<GamePage> {
           badges.Badge(
             badgeContent: const Text('3'),
             child: CustomFAB(
-                heroTag: 'dice',
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/chat');
-                },
-                icon: const Icon(
-                    Icons.chat
-                )
+              heroTag: 'chat',
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/chat');
+              },
+              icon: const Icon(
+                  Icons.chat
+              )
             ),
           )
         ],

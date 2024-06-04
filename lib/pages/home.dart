@@ -39,71 +39,75 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
-          child: Column(
+          child: ListView(
             children: [
-              const SizedBox(height: 20),
-              const SquareTile(
-                imagePath: 'lib/assets/logo.png',
-                size: 160,
-              ),
-              const SizedBox(height: 20),
-              (authState()) ? const Button(
-                onTap: null,
-                childText: 'Please log in first'
-              ) : Button(
-                  onTap: () async {
-                    await showDialog(
-                      barrierDismissible: true,
-                      context: context,
-                      builder: (BuildContext buildContext){
-                        timer = Timer(const Duration(seconds: 5), () {
-                          Navigator.pop(buildContext);
-                          Navigator.pushReplacementNamed(context, '/game');
+              Column(
+                children: [
+                  const SizedBox(height: 20),
+                  const SquareTile(
+                    imagePath: 'lib/assets/logo.png',
+                    size: 160,
+                  ),
+                  const SizedBox(height: 20),
+                  (authState()) ? const Button(
+                    onTap: null,
+                    childText: 'Please log in first'
+                  ) : Button(
+                      onTap: () async {
+                        await showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext buildContext){
+                            timer = Timer(const Duration(seconds: 5), () {
+                              Navigator.pop(buildContext);
+                              Navigator.pushReplacementNamed(context, '/game');
+                            });
+                            return const WaitingRoomDialog();
+                          }
+                        ).then((value) {
+                          if(timer!.isActive){
+                            timer!.cancel();
+                          }
                         });
-                        return const WaitingRoomDialog();
-                      }
-                    ).then((value) {
-                      if(timer!.isActive){
-                        timer!.cancel();
-                      }
-                    });
-                  },
-                  childText: 'Play'
+                      },
+                      childText: 'Play'
+                  ),
+                  const SizedBox(height: 20),
+                  (authState()) ? Button(
+                      onTap: () async {
+                        await Navigator.pushNamed(context, '/login');
+                      },
+                      childText: 'Log In'
+                  ) : Button(
+                      onTap: () async {
+                        await FirebaseAuth.instance.signOut();
+                        setState(() {});
+                      },
+                      childText: 'Log Out'
+                  ),
+                  const SizedBox(height: 20),
+                  Button(
+                      onTap: () async {
+                        await Navigator.pushNamed(context, '/how_to_play');
+                      },
+                      childText: 'How To Play'
+                  ),
+                  const SizedBox(height: 20),
+                  Button(
+                    onTap: (){},
+                    childText: 'Statistic'
+                  ),
+                  const SizedBox(height: 20),
+                  Button(
+                    onTap: () async {
+                      await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                    },
+                    childText: 'Exit',
+                    color: Colors.redAccent,
+                  )
+                ],
               ),
-              const SizedBox(height: 20),
-              (authState()) ? Button(
-                  onTap: () async {
-                    await Navigator.pushNamed(context, '/login');
-                  },
-                  childText: 'Log In'
-              ) : Button(
-                  onTap: () async {
-                    await FirebaseAuth.instance.signOut();
-                    setState(() {});
-                  },
-                  childText: 'Log Out'
-              ),
-              const SizedBox(height: 20),
-              Button(
-                  onTap: () async {
-                    await Navigator.pushNamed(context, '/how_to_play');
-                  },
-                  childText: 'How To Play'
-              ),
-              const SizedBox(height: 20),
-              Button(
-                onTap: (){},
-                childText: 'Statistic'
-              ),
-              const SizedBox(height: 20),
-              Button(
-                onTap: () async {
-                  await SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                },
-                childText: 'Exit',
-                color: Colors.redAccent,
-              )
-            ],
+            ]
           ),
         ),
       ),

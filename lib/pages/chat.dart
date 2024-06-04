@@ -91,7 +91,7 @@ class _ChatState extends State<Chat> {
             alignment: Alignment.bottomCenter,
             child: Row(
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery
                       .of(context)
                       .size
