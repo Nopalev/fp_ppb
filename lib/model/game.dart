@@ -17,4 +17,22 @@ class Game {
       }
     }
   }
+
+  int playerTurn(String uid){
+    for(int i=0; i<players.length; i++){
+      if(players[i]['id'] == uid){
+        return i+1;
+      }
+    }
+    return 0;
+  }
+
+  int getRank(String uid){
+    for(int i=0; i<players.length; i++){
+      if(players[i]['id'] == uid){
+        return players[i]['rank'];
+      }
+    }
+    return 0;
+  }
 }

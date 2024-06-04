@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dice_icons/dice_icons.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fp_ppb/component/finished_game_dialog.dart';
 import 'package:fp_ppb/component/floating_action_button.dart';
 import 'package:fp_ppb/component/game_board.dart';
+import 'package:fp_ppb/component/greeting_dialog.dart';
 import 'package:fp_ppb/component/medal.dart';
 import 'package:fp_ppb/component/player_piece.dart';
 import 'package:fp_ppb/component/roll_dice_dialog.dart';
@@ -21,6 +23,7 @@ class GamePage extends StatefulWidget {
 
 class _GamePageState extends State<GamePage> {
   GameDatabase gameDatabase = GameDatabase();
+  Timer? timer;
   DocumentReference? gameReference;
   Game game = Game(
     players: [
@@ -102,6 +105,24 @@ class _GamePageState extends State<GamePage> {
 
   void initGame() async {
     gameReference = await gameDatabase.create(game);
+    if(mounted){
+      await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext buildContext){
+          timer = Timer(const Duration(seconds: 2), () {
+            Navigator.pop(buildContext);
+          });
+          return GreetingDialog(
+            turn: game.playerTurn(FirebaseAuth.instance.currentUser!.uid)
+          );
+        }
+      ).then((value) {
+        if(timer!.isActive){
+          timer!.cancel();
+        }
+      });
+    }
   }
 
   @override
@@ -184,15 +205,16 @@ class _GamePageState extends State<GamePage> {
           context: context,
           builder: (context){
             return FinishedGameDialog(
-              rank: game.ranks
+              ranks: game.ranks,
+              rank: game.getRank(FirebaseAuth.instance.currentUser!.uid),
             );
           }
         );
       }
     }
 
-    setState(() async {
-      await Future.delayed(const Duration(milliseconds: 750));
+    await Future.delayed(const Duration(milliseconds: 750));
+    setState(() {
       playerPieces[turn] = PlayerPiece(
         number: turn + 1,
         size: 50.0,
@@ -211,7 +233,6 @@ class _GamePageState extends State<GamePage> {
       }
     });
     if(game.players[turn]['bot'] && !gameFinished){
-      await Future.delayed(const Duration(milliseconds: 750));
       rollDice();
     }
   }

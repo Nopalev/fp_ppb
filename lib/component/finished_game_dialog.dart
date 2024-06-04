@@ -4,20 +4,30 @@ import 'package:fp_ppb/component/floating_action_button.dart';
 import 'package:fp_ppb/component/square_tile.dart';
 
 class FinishedGameDialog extends StatelessWidget {
-  final List<String> rank;
+  final List<String> ranks;
+  final int rank;
   const FinishedGameDialog({
     super.key,
+    required this.ranks,
     required this.rank
   });
 
   @override
   Widget build(BuildContext context) {
+    String rankMessage = switch(rank){
+      1 => '1st',
+      2 => '2nd',
+      3 => '3rd',
+      4 => '4th',
+      _ => ''
+    };
+
     return AlertDialog(
       alignment: Alignment.center,
       elevation: 10.0,
       shadowColor: Colors.blueAccent.shade100,
-      title: const Text(
-        'Game is finished',
+      title: Text(
+        'You finished $rankMessage',
         textAlign: TextAlign.center,
       ),
       content: Column(
@@ -34,7 +44,7 @@ class FinishedGameDialog extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                    '1st: ${rank[0]}'
+                    '1st: ${ranks[0]}'
                 ),
               )
             ],
@@ -46,7 +56,7 @@ class FinishedGameDialog extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                    '2nd: ${rank[1]}'
+                    '2nd: ${ranks[1]}'
                 ),
               )
             ],
@@ -58,7 +68,7 @@ class FinishedGameDialog extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                    '3rd: ${rank[2]}'
+                    '3rd: ${ranks[2]}'
                 ),
               )
             ],
@@ -70,7 +80,7 @@ class FinishedGameDialog extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                    '4th: ${rank[3]}'
+                    '4th: ${ranks[3]}'
                 ),
               )
             ],
@@ -83,7 +93,7 @@ class FinishedGameDialog extends StatelessWidget {
           icon: const Icon(
               Icons.close
           ),
-          onPressed: () { Navigator.of(context).popUntil(ModalRoute.withName('/home')); },
+          onPressed: () { Navigator.of(context).pushReplacementNamed('/home'); },
         ),
       ],
       actionsAlignment: MainAxisAlignment.center,
