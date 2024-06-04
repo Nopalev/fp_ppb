@@ -18,13 +18,13 @@ class SetColor {
 class ReplyMsgCard extends StatefulWidget {
   final String username;
   final String message;
-  // final String timestamp;
+  final String timestamp;
 
   const ReplyMsgCard({
     Key? key,
     required this.username,
     required this.message,
-    // required this.timestamp
+    required this.timestamp
   }) : super(key: key);
 
   @override
@@ -32,7 +32,7 @@ class ReplyMsgCard extends StatefulWidget {
 }
 
 class _ReplyMsgCardState extends State<ReplyMsgCard> {
-  Color ColorChatUser = SetColor.randomColor();
+  Color colorChatUser = SetColor.randomColor();
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class _ReplyMsgCardState extends State<ReplyMsgCard> {
               Padding(
                   padding: EdgeInsets.only(left: 10, top: 5),
                   child: Text(widget.username,
-                      style: TextStyle(fontSize: 14, color: ColorChatUser, fontWeight: FontWeight.bold))),
+                      style: TextStyle(fontSize: 14, color: colorChatUser, fontWeight: FontWeight.bold))),
               Padding(
                   padding: EdgeInsets.fromLTRB(10, 25, 40, 20),
                   child: Text(
@@ -62,7 +62,7 @@ class _ReplyMsgCardState extends State<ReplyMsgCard> {
                   bottom: 4,
                   right: 10,
                   child: Text(
-                    "10:22",
+                    widget.timestamp,
                     style: TextStyle(fontSize: 11, color: Colors.grey[400]),
                   )),
             ],
