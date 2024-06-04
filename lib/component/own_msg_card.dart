@@ -8,7 +8,7 @@ class OwnMsgCard extends StatefulWidget {
     super.key,
     required this.message,
     required this.timestamp
-  }) : super(key: key);
+  });
 
   @override
   State<OwnMsgCard> createState() => _OwnMsgCardState();

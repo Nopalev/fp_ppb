@@ -23,7 +23,7 @@ class ReplyMsgCard extends StatefulWidget {
     required this.username,
     required this.message,
     required this.timestamp
-  }) : super(key: key);
+  });
 
   @override
   State<ReplyMsgCard> createState() => _ReplyMsgCardState();

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fp_ppb/component/app_bar.dart';
 import 'package:fp_ppb/component/own_msg_card.dart';
@@ -57,7 +56,7 @@ class _ChatState extends State<Chat> {
                 }
             
                 if (snapshot.connectionState == ConnectionState.waiting){
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
             
                 List messagesList = snapshot.data!.docs;
