@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class OwnMsgCard extends StatefulWidget {
   final String message;
-  // final String timestamp;
+  final String timestamp;
 
   const OwnMsgCard({
     super.key,
     required this.message,
-    // required this.timestamp
-  });
+    required this.timestamp
+  }) : super(key: key);
 
   @override
   State<OwnMsgCard> createState() => _OwnMsgCardState();
@@ -40,7 +40,7 @@ class _OwnMsgCardState extends State<OwnMsgCard> {
                   bottom: 4,
                   right: 10,
                   child: Text(
-                    "10:22",
+                    widget.timestamp,
                     style: TextStyle(fontSize: 11, color: Colors.grey[400]),
                   )),
             ],

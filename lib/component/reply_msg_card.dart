@@ -16,14 +16,14 @@ class SetColor {
 class ReplyMsgCard extends StatefulWidget {
   final String username;
   final String message;
-  // final String timestamp;
+  final String timestamp;
 
   const ReplyMsgCard({
     super.key,
     required this.username,
     required this.message,
-    // required this.timestamp
-  });
+    required this.timestamp
+  }) : super(key: key);
 
   @override
   State<ReplyMsgCard> createState() => _ReplyMsgCardState();
@@ -60,7 +60,7 @@ class _ReplyMsgCardState extends State<ReplyMsgCard> {
                   bottom: 4,
                   right: 10,
                   child: Text(
-                    "10:22",
+                    widget.timestamp,
                     style: TextStyle(fontSize: 11, color: Colors.grey[400]),
                   )),
             ],
