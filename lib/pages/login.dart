@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
       }
       showErrorMessage(error.code);
     }
-    if(mounted){
+    if(mounted && FirebaseAuth.instance.currentUser != null){
       Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
     }
   }

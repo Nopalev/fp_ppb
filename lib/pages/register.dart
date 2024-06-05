@@ -15,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   final PlayerDatabase playerDatabase = PlayerDatabase();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmationController = TextEditingController();
@@ -54,9 +55,9 @@ class _RegisterPageState extends State<RegisterPage> {
       showErrorMessage(error.toString());
     }
 
-    FirebaseAuth.instance.currentUser!.updateDisplayName('username');
+    FirebaseAuth.instance.currentUser!.updateDisplayName(usernameController.text);
 
-    if(mounted){
+    if(mounted && FirebaseAuth.instance.currentUser != null){
       Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
     }
   }
@@ -96,9 +97,14 @@ class _RegisterPageState extends State<RegisterPage> {
               children: [
                 const SquareTile(
                   imagePath: 'lib/assets/logo.png',
-                  size: 160,
+                  size: 80,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 15),
+                CustomTextField(
+                  controller: usernameController,
+                  hintText: 'Username',
+                ),
+                const SizedBox(height: 6),
                 CustomTextField(
                   controller: emailController,
                   hintText: 'Email',

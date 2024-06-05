@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
                           builder: (BuildContext buildContext){
                             timer = Timer(const Duration(seconds: 5), () {
                               Navigator.pop(buildContext);
-                              Navigator.pushReplacementNamed(context, '/game');
+                              Navigator.pushNamed(context, '/game');
                             });
                             return const WaitingRoomDialog();
                           }
