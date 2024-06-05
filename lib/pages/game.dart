@@ -31,6 +31,7 @@ class _GamePageState extends State<GamePage> {
   int rank = 1;
   bool disableDice = false;
   bool gameFinished = false;
+  bool suspendRollDiceDialog = false;
 
   Game game = Game(
     players: [
@@ -109,6 +110,7 @@ class _GamePageState extends State<GamePage> {
     gameReference = await gameDatabase.create(game);
     if(mounted){
       await showDialog(
+        useRootNavigator: false,
         context: context,
         barrierDismissible: false,
         builder: (BuildContext buildContext){
@@ -149,18 +151,18 @@ class _GamePageState extends State<GamePage> {
     });
 
     int dice = Random().nextInt(6);
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (builderContext){
-        Future.delayed(const Duration(seconds: 1), () {
-          Navigator.of(builderContext).pop();
-        });
-        return RollDIceDialog(
-          selectedDice: dice
-        );
-      }
-    );
+    if(!suspendRollDiceDialog){
+      await showDialog(
+          useRootNavigator: false,
+          context: context,
+          barrierDismissible: false,
+          builder: (buildContext) {
+            Future.delayed(const Duration(seconds: 1), () {
+              Navigator.of(buildContext).pop();
+            });
+            return RollDIceDialog(selectedDice: dice);
+          });
+    }
 
     for(int i=0; i<=dice; i++){
       await Future.delayed(const Duration(milliseconds: 750));
@@ -203,12 +205,15 @@ class _GamePageState extends State<GamePage> {
       });
       await Future.delayed(const Duration(milliseconds: 750));
       if(mounted){
-        showDialog(
+        await showDialog(
           context: context,
-          builder: (context){
+          builder: (buildContext){
             return FinishedGameDialog(
               ranks: game.ranks,
               rank: game.getRank(FirebaseAuth.instance.currentUser!.uid),
+              onPressed: (){
+                Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
+              },
             );
           }
         );
@@ -320,7 +325,13 @@ class _GamePageState extends State<GamePage> {
             child: CustomFAB(
               heroTag: 'chat',
               onPressed: () async {
+                setState(() {
+                  suspendRollDiceDialog = true;
+                });
                 await Navigator.pushNamed(context, '/chat');
+                setState(() {
+                  suspendRollDiceDialog = false;
+                });
               },
               icon: const Icon(
                   Icons.chat

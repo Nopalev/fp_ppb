@@ -6,10 +6,12 @@ import 'package:fp_ppb/component/square_tile.dart';
 class FinishedGameDialog extends StatelessWidget {
   final List<String> ranks;
   final int rank;
+  final void Function() onPressed;
   const FinishedGameDialog({
     super.key,
     required this.ranks,
-    required this.rank
+    required this.rank,
+    required this.onPressed
   });
 
   @override
@@ -93,7 +95,7 @@ class FinishedGameDialog extends StatelessWidget {
           icon: const Icon(
               Icons.close
           ),
-          onPressed: () { Navigator.of(context).pushReplacementNamed('/home'); },
+          onPressed: onPressed,
         ),
       ],
       actionsAlignment: MainAxisAlignment.center,

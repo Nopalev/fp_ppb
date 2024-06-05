@@ -51,6 +51,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () async {
                     await FirebaseAuth.instance.currentUser!.updateDisplayName(usernameController.text);
                     setState(() {});
+                    if(context.mounted){
+                      Navigator.pop(context);
+                    }
                   }
                 ),
               ],
