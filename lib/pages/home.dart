@@ -94,7 +94,9 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 20),
                   Button(
-                    onTap: (){},
+                    onTap: () async {
+                      await Navigator.pushNamed(context, '/statistic');
+                    },
                     childText: 'Statistic'
                   ),
                   const SizedBox(height: 20),
