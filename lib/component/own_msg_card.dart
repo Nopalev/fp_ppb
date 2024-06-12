@@ -146,7 +146,6 @@ class _OwnMsgCardState extends State<OwnMsgCard> {
   }
 
   void _showUpdateDialog(BuildContext context) {
-    final TextEditingController txtController = TextEditingController();
     String updatedMsg = widget.message;
     showDialog(
       context: context,
