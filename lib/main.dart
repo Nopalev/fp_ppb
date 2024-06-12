@@ -4,6 +4,7 @@ import 'package:fp_ppb/pages/home.dart';
 import 'package:fp_ppb/pages/chat.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fp_ppb/pages/how_to_play.dart';
+import 'package:fp_ppb/pages/statistic.dart';
 import 'package:fp_ppb/pages/login.dart';
 import 'package:fp_ppb/pages/profile.dart';
 import 'package:fp_ppb/pages/register.dart';
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
     '/chat' : (context) => const Chat(),
     '/login' : (context) => const LoginPage(),
     '/register' : (context) => const RegisterPage(),
-    '/how_to_play' : (context) => const HowToPlayPage()
+    '/how_to_play' : (context) => const HowToPlayPage(),
+    '/statistic' : (context) => const StatisticPage()
   };
 
   // This widget is the root of your application.
