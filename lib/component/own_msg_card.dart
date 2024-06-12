@@ -22,10 +22,11 @@ class OwnMsgCard extends StatefulWidget {
 class _OwnMsgCardState extends State<OwnMsgCard> {
   // Firestore
   final ChatDatabase chatDatabase = ChatDatabase();
+  // bool suspendDialog = false;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onLongPress: () {
         _showButtomSheet();
       },
@@ -65,14 +66,13 @@ class _OwnMsgCardState extends State<OwnMsgCard> {
   }
 
   void _showButtomSheet() {
-    // if(!mounted) return;
     showModalBottomSheet(
         context: context,
         useSafeArea: true,
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(15), topRight: Radius.circular(15))),
-        builder: (BuildContext buildContext) {
+        builder: (BuildContext contextBuilder) {
           return ListView(
             shrinkWrap: true,
             children: [
@@ -90,142 +90,125 @@ class _OwnMsgCardState extends State<OwnMsgCard> {
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 20),
-              _OptionItem(
-                  icon: const Icon(
-                    Icons.edit,
-                    size: 26,
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(contextBuilder);
+                  _showUpdateDialog(contextBuilder);
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * .05,
+                      top: MediaQuery.of(context).size.height * .015,
+                      bottom: MediaQuery.of(context).size.height * .025),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.edit),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .02,
+                      ),
+                      const Flexible(
+                          child: Text(
+                        "Edit",
+                        style: TextStyle(fontSize: 15, letterSpacing: 0.5),
+                      ))
+                    ],
                   ),
-                  name: "Edit Text",
-                  onTap: () {
-                    setState(() {
-                      
-                    });
-                    _showUpdateDialog();
-                    // Navigator.pop(buildContext);
-                  }),
-              _OptionItem(
-                  icon: const Icon(
-                    Icons.delete,
-                    size: 26,
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(contextBuilder);
+                  chatDatabase.deleteMessage(widget.idGame, widget.messageId);
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * .05,
+                      top: MediaQuery.of(context).size.height * .015,
+                      bottom: MediaQuery.of(context).size.height * .025),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.delete),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * .02,
+                      ),
+                      const Flexible(
+                          child: Text(
+                        "Delete",
+                        style: TextStyle(fontSize: 15, letterSpacing: 0.5),
+                      ))
+                    ],
                   ),
-                  name: "Delete Text",
-                  onTap: () {
-                    chatDatabase.deleteMessage(widget.idGame, widget.messageId);
-                    Navigator.pop(buildContext);
-                  }),
+                ),
+              ),
             ],
           );
         });
   }
 
-  // update dialog
-  // void _showUpdateDialog() {
-  //   String updatedMsg = widget.message;
-  //   showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) => AlertDialog(
-  //             contentPadding: const EdgeInsets.only(
-  //                 left: 24, right: 24, top: 20, bottom: 10),
-  //             shape: RoundedRectangleBorder(
-  //                 borderRadius: BorderRadius.circular(15)),
-  //             title: const Text("Update Message"),
-  //             content: TextFormField(
-  //               initialValue: updatedMsg,
-  //               maxLines: null,
-  //               onChanged: (value) => updatedMsg = value,
-  //               decoration: InputDecoration(
-  //                   border: OutlineInputBorder(
-  //                       borderRadius: BorderRadius.circular(10))),
-  //             ),
-  //             actions: [
-  //               MaterialButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                 },
-  //                 child: const Text(
-  //                   "Cancel",
-  //                   style: TextStyle(color: Colors.red, fontSize: 16),
-  //                 ),
-  //               ),
-  //               MaterialButton(
-  //                 onPressed: () {
-  //                   Navigator.pop(context);
-  //                   chatDatabase.updateMessage(
-  //                       widget.idGame, widget.messageId, updatedMsg);
-  //                 },
-  //                 child: const Text(
-  //                   "Update",
-  //                   style: TextStyle(color: Colors.blue, fontSize: 16),
-  //                 ),
-  //               )
-  //             ],
-  //           ));
-  // }
-
-  void _showUpdateDialog() {
-    final TextEditingController textController = TextEditingController();
+  void _showUpdateDialog(BuildContext context) {
+    final TextEditingController txtController = TextEditingController();
+    String updatedMsg = widget.message;
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              content: TextField(
-                controller: textController,
-              ),
-              actions: [
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "Cancel",
-                    style: TextStyle(color: Colors.red, fontSize: 16),
-                  ),
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Container(
+            height: 250,
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, left: 20, right: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                const Text(
+                  "Edit Text",
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                 ),
-                MaterialButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    chatDatabase.updateMessage(
-                        widget.idGame, widget.messageId, textController.text);
-                  },
-                  child: const Text(
-                    "Update",
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
-                  ),
-                )
+                const SizedBox(height: 20.0),
+                TextFormField(
+                  initialValue: updatedMsg,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 2,
+                  minLines: 1,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                  // controller: txtController,
+                  onChanged: (value) => updatedMsg = value,
+                ),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text(
+                        "Close",
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                    TextButton(
+                        onPressed: updatedMsg.trim().isEmpty
+                              ? null
+                              : () {
+                                  if (!updatedMsg.trim().isEmpty) {
+                                    chatDatabase.updateMessage(widget.idGame, widget.messageId, updatedMsg);
+                                  }
+                          Navigator.pop(context);
+                        },
+                        child: const Text("Update"))
+                  ],
+                ),
               ],
-            ));
-  }
-}
-
-class _OptionItem extends StatelessWidget {
-  final Icon icon;
-  final String name;
-  final VoidCallback onTap;
-  const _OptionItem(
-      {required this.icon, required this.name, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap(),
-      child: Padding(
-        padding: EdgeInsets.only(
-            left: MediaQuery.of(context).size.width * .05,
-            top: MediaQuery.of(context).size.height * .015,
-            bottom: MediaQuery.of(context).size.height * .025),
-        child: Row(
-          children: [
-            icon,
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .02,
             ),
-            Flexible(
-                child: Text(
-              name,
-              style: const TextStyle(fontSize: 15, letterSpacing: 0.5),
-            ))
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
