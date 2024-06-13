@@ -10,28 +10,48 @@ class ChatDatabase {
 // Send message
   Future<void> sendMsg(String idGame, String message) async {
     // username
-    final String currentUsername = FirebaseAuth.instance.currentUser!.uid.toString();
+    final String currentId = FirebaseAuth.instance.currentUser!.uid.toString();
+    final String currentUsername = FirebaseAuth.instance.currentUser!.displayName.toString();
     final Timestamp timestamp = Timestamp.now();
 
-    Message newMessage = Message(username: currentUsername, message: message, timestamp: timestamp);
-    
-    await chat.doc(idGame).collection('messages').add(newMessage.toMap());
+    if (currentUsername.isNotEmpty) {
+      Message newMessage = Message(
+          username: currentUsername, message: message, timestamp: timestamp);
+      await chat.doc(idGame).collection('messages').add(newMessage.toMap());
+    } else {
+      Message newMessage = Message(
+          username: currentId, message: message, timestamp: timestamp);
+      await chat.doc(idGame).collection('messages').add(newMessage.toMap());
+    }
   }
 
 // READ message
   Stream<QuerySnapshot> getMessages(String idGame) {
-    return chat.doc(idGame).collection("messages").orderBy("timestamp", descending: false).snapshots();
+    return chat
+        .doc(idGame)
+        .collection("messages")
+        .orderBy("timestamp", descending: false)
+        .snapshots();
   }
 
 // DELETE message
   Future<void> deleteMessage(String idGame, String messageId) async {
     // return notes.doc(docID).delete();
-    return await chat.doc(idGame).collection('messages').doc(messageId).delete();
+    return await chat
+        .doc(idGame)
+        .collection('messages')
+        .doc(messageId)
+        .delete();
   }
 
 // UPDATE message
-  Future<void> updateMessage(String idGame, String messageId, String updatedMsg) async {
+  Future<void> updateMessage(
+      String idGame, String messageId, String updatedMsg) async {
     // return notes.doc(docID).delete();
-    return await chat.doc(idGame).collection('messages').doc(messageId).update({'message': updatedMsg});
+    return await chat
+        .doc(idGame)
+        .collection('messages')
+        .doc(messageId)
+        .update({'message': updatedMsg});
   }
 }

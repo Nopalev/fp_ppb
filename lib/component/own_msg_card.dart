@@ -195,7 +195,7 @@ class _OwnMsgCardState extends State<OwnMsgCard> {
                         onPressed: updatedMsg.trim().isEmpty
                               ? null
                               : () {
-                                  if (!updatedMsg.trim().isEmpty) {
+                                  if (updatedMsg.trim().isNotEmpty) {
                                     chatDatabase.updateMessage(widget.idGame, widget.messageId, updatedMsg);
                                   }
                           Navigator.pop(context);
