@@ -1,11 +1,18 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fp_ppb/component/app_bar.dart';
 import 'package:fp_ppb/component/button.dart';
+import 'package:fp_ppb/component/floating_action_button.dart';
 import 'package:fp_ppb/component/square_tile.dart';
-import 'package:fp_ppb/component/waiting_room_dialog.dart';
+import 'package:fp_ppb/component/starting_game_dialog.dart';
+import 'package:fp_ppb/component/text_field.dart';
+import 'package:fp_ppb/database/game.dart';
+import 'package:fp_ppb/database/player.dart';
+import 'package:fp_ppb/model/game.dart';
+import 'package:fp_ppb/model/player.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,9 +22,252 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GameDatabase gameDatabase = GameDatabase();
+  PlayerDatabase playerDatabase = PlayerDatabase();
+  DocumentReference? gameReference;
+  String? waitingRoomID;
   Timer? timer;
+  bool isMultiPlayer = false;
+  bool isHost = false;
   bool authState(){
     return (FirebaseAuth.instance.currentUser == null) ? true : false;
+  }
+
+  void startGame() async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext buildContext){
+        return StartingGameDialog(
+          onPresseds: [
+            () async {
+              gameReference = await gameDatabase.create(
+                Game(
+                  host: FirebaseAuth.instance.currentUser!.uid,
+                  multiplayer: false,
+                  players: [
+                    {
+                      'id': FirebaseAuth.instance.currentUser!.uid,
+                      'username': FirebaseAuth.instance.currentUser!.displayName.toString(),
+                      'rank' : 0,
+                      'turn' : 0,
+                      'bot' : false
+                    },
+                    {
+                      'id': 'Bot 1',
+                      'username': 'Bot 1',
+                      'rank' : 0,
+                      'turn' : 0,
+                      'bot': true
+                    },
+                    {
+                      'id': 'Bot 2',
+                      'username': 'Bot 2',
+                      'rank' : 0,
+                      'turn' : 0,
+                      'bot': true
+                    },
+                    {
+                      'id': 'Bot 3',
+                      'username': 'Bot 3',
+                      'rank' : 0,
+                      'turn' : 0,
+                      'bot': true
+                    },
+                  ],
+                )
+              );
+              Player player = await playerDatabase.getPlayer(FirebaseAuth.instance.currentUser!.uid);
+              player.setCurrentGame(gameReference!.id);
+              await playerDatabase.update(player);
+              if(mounted){
+                Navigator.pushReplacementNamed(context, '/game');
+              }
+            },
+            (){
+              setState(() {
+                isMultiPlayer = true;
+              });
+              Navigator.pop(buildContext);
+            }
+          ],
+          buttonNames: const ['Single Player', 'Multi Player']
+        );
+      }
+    );
+    if(isMultiPlayer && mounted){
+      await showDialog(
+        context: context,
+        builder: (BuildContext buildContext){
+          return StartingGameDialog(
+            onPresseds: [
+              () async {
+                setState(() {
+                  isHost = true;
+                });
+                gameReference = await gameDatabase.create(
+                  Game(
+                    host: FirebaseAuth.instance.currentUser!.uid,
+                    multiplayer: false,
+                    players: [
+                      {
+                        'id': FirebaseAuth.instance.currentUser!.uid,
+                        'username': FirebaseAuth.instance.currentUser!.displayName.toString(),
+                        'rank' : 0,
+                        'turn' : 0,
+                        'bot' : false
+                      }
+                    ],
+                  )
+                );
+                Player player = await playerDatabase.getPlayer(FirebaseAuth.instance.currentUser!.uid);
+                player.setCurrentGame(gameReference!.id);
+                await playerDatabase.update(player);
+                if(buildContext.mounted){
+                  Navigator.pop(buildContext);
+                }
+              },
+              (){
+                Navigator.pop(buildContext);
+              }
+            ],
+            buttonNames: const ['Create New', 'Join Existing']
+          );
+        }
+      );
+      if(mounted && isHost){
+        await showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext buildContext){
+            return Dialog(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Press the button below to start the game',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 24
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'The game code is: \n${gameReference!.id}',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        fontSize: 18
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextButton(
+                            onPressed: (){
+                              Clipboard.setData(ClipboardData(text: gameReference!.id));
+                            },
+                            child: const Icon(Icons.copy)
+                        ),
+                        CustomFAB(
+                          heroTag: 'start',
+                          onPressed: () async {
+                            Game game = await gameDatabase.getGame(gameReference!.id);
+                            int playerCount = game.players.length;
+                            for(int i = game.players.length; i < 4; i++){
+                              game.addPlayer({
+                                'id': 'Bot ${1+(i-playerCount)}',
+                                'username': 'Bot ${1+(i-playerCount)}',
+                                'rank' : 0,
+                                'turn' : 0,
+                                'bot' : true
+                              });
+                            }
+                            await gameDatabase.update(gameReference!.id, game);
+                            if(mounted){
+                              Navigator.pushReplacementNamed(context, '/game');
+                            }
+                          },
+                          icon: const Icon(Icons.check)
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          }
+        );
+      }
+      else if(mounted){
+        await showDialog(
+          context: context,
+          builder: (BuildContext buildContext){
+            TextEditingController textEditingController = TextEditingController();
+            return Dialog(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Insert a game code ',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 24
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: CustomTextField(
+                        controller: textEditingController,
+                        hintText: 'Enter the game code'
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    CustomFAB(
+                        heroTag: 'submit',
+                        onPressed: () async {
+                          String gameID = textEditingController.text;
+                          Game game = await gameDatabase.getGame(gameID);
+
+                          game.addPlayer({
+                            'id': FirebaseAuth.instance.currentUser!.uid,
+                            'username': FirebaseAuth.instance.currentUser!.displayName.toString(),
+                            'rank' : 0,
+                            'turn' : 0,
+                            'bot' : false
+                          });
+
+                          gameDatabase.update(gameID, game);
+
+                          Player player = await playerDatabase.getPlayer(FirebaseAuth.instance.currentUser!.uid);
+                          player.setCurrentGame(gameID);
+                          await playerDatabase.update(player);
+                          if(mounted){
+                            Navigator.pushReplacementNamed(context, '/game');
+                          }
+                        },
+                        icon: const Icon(Icons.input)
+                    ),
+                    const SizedBox(height: 10)
+                  ],
+                ),
+              ),
+            );
+          }
+        );
+      }
+      setState(() {
+        isMultiPlayer = false;
+        isHost = false;
+      });
+    }
   }
 
   @override
@@ -53,23 +303,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: null,
                     childText: 'Please log in first'
                   ) : Button(
-                      onTap: () async {
-                        await showDialog(
-                          barrierDismissible: true,
-                          context: context,
-                          builder: (BuildContext buildContext){
-                            timer = Timer(const Duration(seconds: 5), () {
-                              Navigator.pop(buildContext);
-                              Navigator.pushNamed(context, '/game');
-                            });
-                            return const WaitingRoomDialog();
-                          }
-                        ).then((value) {
-                          if(timer!.isActive){
-                            timer!.cancel();
-                          }
-                        });
-                      },
+                      onTap: startGame,
                       childText: 'Play'
                   ),
                   const SizedBox(height: 20),

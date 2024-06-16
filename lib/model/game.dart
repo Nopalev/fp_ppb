@@ -1,8 +1,12 @@
 class Game {
   List<String> ranks = ['', '', '', ''];
   List<Map<String, dynamic>> players;
+  String host;
+  bool multiplayer;
   Game({
     required this.players,
+    required this.host,
+    required this.multiplayer
   });
 
   void changeRank(int index, int rank){
@@ -34,5 +38,9 @@ class Game {
       }
     }
     return 0;
+  }
+
+  void addPlayer(Map<String, dynamic> player){
+    players.add(player);
   }
 }
