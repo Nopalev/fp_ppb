@@ -57,6 +57,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
     FirebaseAuth.instance.currentUser!.updateDisplayName(usernameController.text);
 
+    playerDatabase.create(FirebaseAuth.instance.currentUser!.uid);
+
     if(mounted && FirebaseAuth.instance.currentUser != null){
       Navigator.pushNamedAndRemoveUntil(context, '/home', (r) => false);
     }
