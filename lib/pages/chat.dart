@@ -19,8 +19,6 @@ class _ChatState extends State<Chat> {
   final ChatDatabase chatDatabase = ChatDatabase();
   //Text Controller
   final TextEditingController msgController = TextEditingController();
-  // ID Game
-  final String idGame = 'Room Chat 1';
   // Scroll Controller
   final ScrollController _scrollController = ScrollController();
 
@@ -43,6 +41,9 @@ class _ChatState extends State<Chat> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    final String idGame = args['idGame'];
+
     return Scaffold(
       appBar: const CustomAppBar(title: 'Chat'),
       body: Column(
@@ -68,15 +69,16 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     // Retrieve message data
                     Map<String, dynamic> data = messagesList[index].data();
+                    final String msgId = messagesList[index].id;
                     final String username = data['username'];
                     final String text = data['message'];
                     final String timestamp = formatTimeStamp(data['timestamp']);
-                    final String loginUser = FirebaseAuth.instance.currentUser!.uid.toString();
+                    final String loginUserId = FirebaseAuth.instance.currentUser!.uid.toString();
+                    final String loginUsername = FirebaseAuth.instance.currentUser!.displayName.toString();
       
                     // Check if the message is sent by the current user or others
-                    // bool isOwnMessage = username == loginUser;
-                    if (username == loginUser){
-                      return OwnMsgCard(message: text, timestamp: timestamp);
+                    if (username == loginUserId || username == loginUsername){
+                      return OwnMsgCard(message: text, timestamp: timestamp, messageId: msgId, idGame: idGame);
                     }else{
                       return ReplyMsgCard(username: username, message: text, timestamp: timestamp);
                     }

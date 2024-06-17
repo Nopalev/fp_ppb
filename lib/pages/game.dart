@@ -328,7 +328,7 @@ class _GamePageState extends State<GamePage> {
                 setState(() {
                   suspendRollDiceDialog = true;
                 });
-                await Navigator.pushNamed(context, '/chat');
+                await Navigator.pushNamed(context, '/chat', arguments: {'idGame': gameReference!.id});
                 setState(() {
                   suspendRollDiceDialog = false;
                 });

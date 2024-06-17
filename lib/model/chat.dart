@@ -11,6 +11,10 @@ class Message{
     required this.timestamp,
   });
 
+  // Message.fromJson(Map<String, dynamic> json){
+  //   username = json['username'],
+  // }
+
   Map<String, dynamic> toMap(){
     return{
       'username': username,
