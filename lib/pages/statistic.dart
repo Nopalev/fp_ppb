@@ -17,13 +17,19 @@ class _StatisticPageState extends State<StatisticPage> {
   int page = 1;
   Map<int, List<String>> contents = {
     1: ['Rank', 'Count', 'Statistic'],
-    2: ['Date', 'Rank', 'History'],
+    2: ['Date', 'Position', 'History'],
   };
+
+  bool authState() {
+    return FirebaseAuth.instance.currentUser == null;
+  }
 
   @override
   void initState() {
     super.initState();
-    userId = FirebaseAuth.instance.currentUser!.uid;
+    if (!authState()) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    }
   }
 
   @override
@@ -34,7 +40,16 @@ class _StatisticPageState extends State<StatisticPage> {
         padding: const EdgeInsets.symmetric(horizontal: 30.0),
         child: Align(
           alignment: Alignment.topCenter,
-          child: page == 1 ? _buildStatisticsTable() : _buildHistoryTable(),
+          child: authState() ?
+            const Center(
+              child: Text(
+                "Please log in first, we don't have data for unknown users!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18.0),
+              ),
+            ) : page == 1
+              ? _buildStatisticsTable()
+              : _buildHistoryTable(),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -77,16 +92,16 @@ class _StatisticPageState extends State<StatisticPage> {
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         var games = snapshot.data!.docs;
         Map<int, int> rankCounts = {1: 0, 2: 0, 3: 0, 4: 0};
 
         // Debugging
-        var userGames = games.where((doc) {
-          var data = doc.data() as Map<String, dynamic>;
-          return data['players'].any((player) => player['id'] == userId);
-        }).toList();
+        // var userGames = games.where((doc) {
+        //   var data = doc.data() as Map<String, dynamic>;
+        //   return data['players'].any((player) => player['id'] == userId);
+        // }).toList();
         // print("Games data: ${userGames.map((doc) => doc.data()).toList()}");
         // print("User data: $userId");
         //Debugging
@@ -107,20 +122,36 @@ class _StatisticPageState extends State<StatisticPage> {
           ],
           rows: [
             DataRow(cells: [
-              const DataCell(Text('1')),
-              DataCell(Text(rankCounts[1].toString())),
+              const DataCell(
+                Center(child: Text('1'))
+              ),
+              DataCell(
+                Center(child: Text(rankCounts[1].toString()))
+              ),
             ]),
             DataRow(cells: [
-              const DataCell(Text('2')),
-              DataCell(Text(rankCounts[2].toString())),
+              const DataCell(
+                Center(child: Text('2'))
+              ),
+              DataCell(
+                Center(child: Text(rankCounts[2].toString()))
+              ),
             ]),
             DataRow(cells: [
-              const DataCell(Text('3')),
-              DataCell(Text(rankCounts[3].toString())),
+              const DataCell(
+                Center(child: Text('3'))
+              ),
+              DataCell(
+                Center(child: Text(rankCounts[3].toString()))
+              ),
             ]),
             DataRow(cells: [
-              const DataCell(Text('4')),
-              DataCell(Text(rankCounts[4].toString())),
+              const DataCell(
+                  Center(child: Text('4'))
+              ),
+              DataCell(
+                  Center(child: Text(rankCounts[4].toString()))
+              ),
             ]),
           ],
         );
@@ -136,7 +167,7 @@ class _StatisticPageState extends State<StatisticPage> {
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const CircularProgressIndicator();
+          return const Center(child: CircularProgressIndicator());
         }
         var games = snapshot.data!.docs;
         List<DataRow> rows = [];
